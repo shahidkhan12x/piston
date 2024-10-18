@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video on Custom Marker</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #info { position: absolute; top: 10px; left: 10px; color: white; z-index: 1000; }
+    </style>
+</head>
+<body>
+    <div id="info">Point your camera at the custom marker!</div>
+
+    <video id="video" autoplay loop style="display:none;">
+        <source src="piston.mp4" type="video/mp4"> <!-- Replace with your video path -->
+        Your browser does not support the video tag.
+    </video>
+
+    <a-scene embedded arjs='sourceType: webcam;'>
+        <a-entity camera></a-entity>
+        <a-marker type='pattern' url='pis.patt'> <!-- Change to your custom marker's .patt file -->
+            <a-plane id="videoPlane" position="0 9 0" rotation="-90 0 0" width="6.1" height="3"
+                     material="src: #video; transparent: true; shader: flat;"></a-plane>
+        </a-marker>
+    </a-scene>
+
+    <script>
+        const video = document.getElementById('video');
+        const videoPlane = document.getElementById('videoPlane');
+        const marker = document.querySelector('a-marker');
+
+        marker.addEventListener('markerFound', () => {
+            video.play(); // Play the video with sound
+            videoPlane.setAttribute('visible', true); // Show the video plane
+        });
+
+        marker.addEventListener('markerLost', () => {
+            video.pause();
+            videoPlane.setAttribute('visible', false); // Hide the video plane
+        });
+    </script>
+</body>
+</html>
+
